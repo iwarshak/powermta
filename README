@@ -5,6 +5,9 @@ If you are doing any kind of mass mailing and you want the message to be unique
 to each user, and not one email with 50000000 people bcc'ed on it, this 
 extension is for you.
 
+I extracted this library from schoolsout.com, which literally sends hundreds of thousands of 
+time-sensitive emails a day.
+
 Example usage:
 
 require 'pmta_extension'
