@@ -1,0 +1,41 @@
+This is an extension to Ruby's net/smtp library that lets you take advantage
+of PowerMTA's (port25.com) native mailmerge feature. 
+
+If you are doing any kind of mass mailing and you want the message to be unique 
+to each user, and not one email with 50000000 people bcc'ed on it, this 
+extension is for you.
+
+Example usage:
+
+require 'pmta_extension'
+
+users = User.find(:all)
+
+email_text =<<-EOF 
+From: "your friendly social network" <support@nosebook.com>
+To: [*to]
+Subject: Howdy [firstname]
+
+Dear [firstname],
+
+Did you know that you have [friend_count] friends? You must be one popular [gender]!!!
+
+Sincerely,
+Your friends at NoseBook
+EOF
+
+addresses = []
+users.each do |user|
+  addresses << {:address => user.email, 
+                :variables => {"firstname" => user.firstname, "friend_count" => user.friends.size, "gender" => user.gender == "m" ? 'dude' : 'gal'}}
+end
+
+Net::SMTP.start('your.powermta.mailserver.com', 25) do |smtp|
+  smtp.send_merge_message(email_text, 'support@nosebook.com', true, addresses)
+end
+
+That's it. Now instead of having to compose and send User.size custom emails
+(which can take forever), you can send 1 mailmerge message to the PowerMTA server
+(the mail server) and have it do all of the merging for you. 
+
+Feel free to email me with any questions. Ian Warshak <iwarshak@stripey.net>
