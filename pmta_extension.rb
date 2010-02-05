@@ -4,41 +4,31 @@ module Net
   class SMTP
     # only a merging 1 part
     def send_merge_message( msgstr, from_addr, verp = true,  to_addrs_with_variables = [])      
-      send_merge0(from_addr, verp, to_addrs_with_variables) {
-        @socket.write_message msgstr
-      }
-    end
-    
-    private
-    def send_merge0( from_addr, verp, to_addrs_with_variables )
-      # {"foo@bar.com" => {"subject" => "this is the subject", "the_link" => "yahoo.com"}}
       raise IOError, 'closed session' unless @socket
-      raise ArgumentError, 'mail destination not given' if to_addrs_with_variables.empty?
-      if $SAFE > 0
-        raise SecurityError, 'tainted from_addr' if from_addr.tainted?
-        to_addrs_with_variables.each do |to| 
-          raise SecurityError, 'tainted to_addr' if to.tainted?
-        end
-      end
-
-      xmrg_from(from_addr, verp)
-      
+      xmrg_from from_addr, verp
       to_addrs_with_variables.each do |addr|
         xmrg_to addr[:address], addr[:variables]
       end
+      
+      # With mail merge, we don't send DATA command, we send XPRT command
       res = critical {
-        check_response(get_response('XPRT 1 LAST'), true)
-        yield
+        check_continue get_response('XPRT 1 LAST')
+        @socket.write_message msgstr
         recv_response()
       }
-      check_response(res)
+      check_response res
+      res
     end
     
+    private
     def xmrg_from(fromaddr, verp)
+      if $SAFE > 0
+        raise SecurityError, 'tainted from_addr' if from_addr.tainted?
+      end
       if verp
-        getok('XMRG FROM:<%s> VERP', fromaddr)
+        getok("XMRG FROM:<#{fromaddr}> VERP")
       else
-        getok('XMRG FROM:<%s>', fromaddr)
+        getok("XMRG FROM:<#{fromaddr}>")
       end
     end
     
@@ -50,12 +40,10 @@ module Net
         getok("XDFN #{key.to_s}=\"#{value.to_s}\"")
       end   
       begin   
-        getok('RCPT TO:<%s>', to)
+        getok("RCPT TO:<#{to}>")
       rescue
         #puts "Bad address: #{to}. #{$!}"
       end
     end
-      
-    
   end
 end
