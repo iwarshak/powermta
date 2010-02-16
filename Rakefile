@@ -5,7 +5,7 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "powermta"
-    gem.summary = %Q{Do mailmerging with PowerMTA}
+    gem.summary = %Q{Do mail-merging with PowerMTA. Compatible with Ruby 1.8.7 & 1.9.X, but NOT 1.8.6}
     gem.description = %Q{This is an extension to Ruby's net/smtp library that lets you take advantage
     of PowerMTA's (port25.com) native mailmerge feature.}
     gem.email = "iwarshak@stripey.net"
