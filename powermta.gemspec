@@ -17,6 +17,18 @@ Gem::Specification.new do |s|
     "LICENSE",
      "README.rdoc"
   ]
+  s.files = [
+    ".gitignore",
+     "LICENSE",
+     "README.rdoc",
+     "Rakefile",
+     "VERSION",
+     "lib/pmta_extension.rb",
+     "lib/powermta.rb",
+     "powermta.gemspec",
+     "test/helper.rb",
+     "test/test_powermta.rb"
+  ]
   s.homepage = %q{http://github.com/iwarshak/powermta}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
