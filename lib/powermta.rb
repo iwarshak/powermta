@@ -1,0 +1,1 @@
+require 'pmta_extension'
