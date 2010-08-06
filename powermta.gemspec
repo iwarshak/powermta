@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{powermta}
-  s.version = "0.0.1"
+  s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ian Warshak"]
-  s.date = %q{2010-02-16}
+  s.date = %q{2010-08-06}
   s.description = %q{This is an extension to Ruby's net/smtp library that lets you take advantage
     of PowerMTA's (port25.com) native mailmerge feature.}
   s.email = %q{iwarshak@stripey.net}
@@ -33,7 +33,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.5}
-  s.summary = %q{Do mailmerging with PowerMTA}
+  s.summary = %q{Do mail-merging with PowerMTA. Compatible with Ruby 1.8.7 & 1.9.X, but NOT 1.8.6}
   s.test_files = [
     "test/helper.rb",
      "test/test_powermta.rb"
