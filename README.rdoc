@@ -12,33 +12,33 @@ time-sensitive emails a day.
 
 Example usage:
 
-require 'pmta_extension'
+  require 'pmta_extension'
 
-users = User.find(:all)
+  users = User.find(:all)
 
-email_text =<<-EOF 
-From: "your friendly social network" <support@nosebook.com>
-To: [*to]
-Subject: Howdy [firstname]
+  email_text =<<-EOF 
+    From: "your friendly social network" <support@nosebook.com>
+    To: [*to]
+    Subject: Howdy [firstname]
+    
+    Dear [firstname],
+    
+    Did you know that you have [friend_count] friends? You must be one popular [gender]!!!
+    
+    Sincerely,
+    Your friends at NoseBook
+    EOF
 
-Dear [firstname],
+  addresses = []
+  users.each do |user|
+    addresses << {:address => user.email, 
+                  :variables => {"firstname" => user.firstname, "friend_count" => user.friends.size, "gender" => user.gender == "m" ? 'dude' : 'gal'}}
+  end
 
-Did you know that you have [friend_count] friends? You must be one popular [gender]!!!
-
-Sincerely,
-Your friends at NoseBook
-EOF
-
-addresses = []
-users.each do |user|
-  addresses << {:address => user.email, 
-                :variables => {"firstname" => user.firstname, "friend_count" => user.friends.size, "gender" => user.gender == "m" ? 'dude' : 'gal'}}
-end
-
-Net::PowerMTA.start('your.powermta.mailserver.com', 25) do |smtp|
-  smtp.disable_xack  # if you want to ignore ACK on RCPT TO and XDFN commands
-  smtp.send_merge_message(email_text, 'support@nosebook.com', true, addresses)
-end
+  Net::PowerMTA.start('your.powermta.mailserver.com', 25) do |smtp|
+    smtp.disable_xack  # if you want to ignore ACK on RCPT TO and XDFN commands
+    smtp.send_merge_message(email_text, 'support@nosebook.com', true, addresses)
+  end
 
 That's it. Now instead of having to compose and send User.size custom emails
 (which can take forever), you can send 1 mailmerge message to the PowerMTA server
